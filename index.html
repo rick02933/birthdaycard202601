@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猜猜我是誰？壽星大揭密</title>
+    <style>
+        /* --- 1. 基礎設定 --- */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); /* 柔和背景 */
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+        }
+
+        /* --- 2. 卡片容器 (3D 場景) --- */
+        .scene {
+            width: 300px;
+            height: 450px;
+            perspective: 1000px; /* 創造 3D 景深 */
+            cursor: pointer;
+        }
+
+        /* --- 3. 卡片本體 --- */
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.8s;
+            transform-style: preserve-3d; /* 保留 3D 空間 */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+
+        /* 當卡片被加上 .is-flipped 類別時，旋轉 180 度 */
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* --- 4. 卡片正反面通用樣式 --- */
+        .card__face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* 隱藏背面 */
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            background-color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* --- 5. 正面樣式 (謎題) --- */
+        .card__face--front {
+            background: #fff5e6; /* 淡淡的橘黃色 */
+            border: 5px solid #ffcc80;
+        }
+
+        .hint-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d35400;
+            margin-top: 20px;
+        }
+
+        .tap-hint {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #888;
+            animation: bounce 2s infinite;
+        }
+
+        /* --- 6. 背面樣式 (揭曉) --- */
+        .card__face--back {
+            background: #e8f8f5; /* 淡淡的薄荷綠 */
+            border: 5px solid #76d7c4;
+            transform: rotateY(180deg); /* 預先轉 180 度，這樣翻過來時才是正的 */
+        }
+
+        .name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #148f77;
+            margin: 10px 0 5px 0;
+        }
+
+        .department {
+            font-size: 1rem;
+            color: #555;
+            background: #d1f2eb;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        /* --- 7. 照片樣式 --- */
+        .photo-frame {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%; /* 圓形頭像 */
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* 神秘照片可以是方形或圓形，這裡設為圓角方形 */
+        .mystery-photo {
+            width: 220px;
+            height: 220px;
+            border-radius: 10px;
+            object-fit: cover;
+            filter: blur(2px); /* 可以選擇是否要加一點模糊增加難度，不要的話可移除 */
+            transition: filter 0.3s;
+        }
+        
+        /* 滑鼠移過去時取消模糊 (選用) */
+        .scene:hover .mystery-photo {
+            filter: blur(0);
+        }
+
+        /* --- 8. 小動畫 --- */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="scene">
+        <div class="card">
+            
+            <div class="card__face card__face--front">
+                <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1000&auto=format&fit=crop" alt="神秘照片" class="mystery-photo">
+                
+                <div class="hint-text">猜猜我是誰？</div>
+                <div class="tap-hint">👆 點擊揭曉答案</div>
+            </div>
+
+            <div class="card__face card__face--back">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop" alt="壽星照片" class="photo-frame">
+                
+                <div class="name">林小美</div>
+                <div class="department">行銷部</div>
+                <div class="message">
+                    祝妳生日快樂！<br>
+                    願新的一歲創意無限，<br>
+                    天天開心！🎂
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // 互動邏輯：點擊卡片後，切換 'is-flipped' 類別
+        const card = document.querySelector('.card');
+
+        card.addEventListener('click', function() {
+            card.classList.toggle('is-flipped');
+        });
+    </script>
+
+</body>
+</html>
